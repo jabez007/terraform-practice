@@ -1,6 +1,10 @@
 name: Update Repos' Environments
 
 on:
+  push:
+    branches:
+      - main
+      - master
   schedule:
     - cron: "0 2 * * *"  # Runs at 2:00 AM UTC every night
   workflow_dispatch:    # Allows manual triggering of the workflow
