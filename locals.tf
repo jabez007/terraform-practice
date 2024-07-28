@@ -21,7 +21,7 @@ locals {
   repo_environments = flatten([
     for repo in data.github_repositories.my_topics.names : [
       for env in local.environments : {
-        repository = repo
+        repository  = repo
         environment = env
       }
     ]

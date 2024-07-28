@@ -15,6 +15,6 @@ resource "github_repository_environment" "environments" {
     for env in local.repo_environments : "${env.repository} - ${env.environment}" => env
   })
 
-  repository = each.value.repository
+  repository  = each.value.repository
   environment = each.value.environment
 }
