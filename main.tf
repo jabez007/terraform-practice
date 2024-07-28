@@ -15,6 +15,8 @@ terraform {
     workspaces { # block must contain exactly one of either tags or name argument
       name = "terraform-practice"
     }
+
+    # token = TF_TOKEN_hostname # host-specific environment variable
   }
 }
 
