@@ -4,7 +4,7 @@ provider "github" {
 }
 
 data "github_repositories" "my_topics" {
-  query = "user:@me topic:practice"
+  query = "user:${var.github_owner} topic:practice"
 }
 
 resource "github_repository_environment" "environments" {
