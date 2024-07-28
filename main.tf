@@ -15,6 +15,7 @@ provider "github" {
 }
 
 data "github_repositories" "my_topics" {
+  # https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
   query = "user:${var.github_owner} topic:practice"
 }
 
