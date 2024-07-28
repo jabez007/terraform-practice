@@ -8,14 +8,12 @@ data "github_repositories" "my_topics" {
 }
 
 resource "github_repository_environment" "environments" {
-  for_each = {
-    for repo in data.github_repositories.my_topics : repo.name => [
-      for env in local.environments : {
-        repository  = repo.name
-        environment = env
-      }
-    ]
-  }
+  # local.repo_environments is a list of objects
+  # so we must project that into a map
+  # where each key is unique
+  for_each = toMap({
+    for env in local.repo_environments : "${env.repository} - ${env.environment}" => env
+  })
 
   repository = each.value.repository
   environment = each.value.environment
