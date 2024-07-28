@@ -7,6 +7,15 @@ terraform {
       version = "~> 6.0"
     }
   }
+
+  cloud {
+    organization = "mccann-hub"
+    hostname     = "app.terraform.io" # Optional; defaults to app.terraform.io
+
+    workspaces { # block must contain exactly one of either tags or name argument
+      project = "terraform-practice"
+    }
+  }
 }
 
 provider "github" {
