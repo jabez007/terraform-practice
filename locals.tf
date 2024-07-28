@@ -1,7 +1,7 @@
 locals {
   environments = ["Development", "UAT", "Production"]
 
-  ####
+  #### https://developer.hashicorp.com/terraform/language/functions/flatten#flattening-nested-structures-for-for_each
   # create a list of objects
   # [
   #   {

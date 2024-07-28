@@ -19,6 +19,7 @@ data "github_repositories" "my_topics" {
 }
 
 resource "github_repository_environment" "environments" {
+  # https://developer.hashicorp.com/terraform/language/meta-arguments/for_each
   # local.repo_environments is a list of objects
   # so we must project that into a map
   # where each key is unique
