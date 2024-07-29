@@ -34,8 +34,8 @@ jobs:
       - name: Plan Terraform
         run: terraform plan
 
-      #- name: Apply Terraform
-      #  run: terraform apply -auto-approve
+      - name: Apply Terraform
+        run: terraform apply -refresh-only
 
     env:
       TF_VAR_github_owner: ${{ github.actor }}
