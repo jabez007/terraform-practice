@@ -10,5 +10,5 @@ import {
   })
 
   to = github_repository_environment.environments[each.key]
-  id = each.value.env_id
+  id = "${each.value.repository}:${each.value.env_name}"
 }
