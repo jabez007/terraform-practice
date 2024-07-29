@@ -6,7 +6,9 @@ data "github_branch_protection_rules" "my_rules" {
 
 import {
   for_each = toset([
-    for repo in data.github_repositories.my_topics : repo if contains([for rule in data.github_branch_protection_rules.my_rules[repo].rules : rule.pattern], "{main,master}")
+    for repo in data.github_repositories.my_topics : repo if(
+      contains([for rule in data.github_branch_protection_rules.my_rules[repo].rules : rule.pattern], "{main,master}")
+    )
   ])
 
   to = github_branch_protection.main[each.key]
