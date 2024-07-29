@@ -5,7 +5,7 @@ data "github_repositories" "my_topics" {
 
 # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/user
 data "github_user" "current" {
-  username = "" # Retrieve information about the currently authenticated user.
+  username = var.github_owner # Retrieve information about the currently authenticated user.
 }
 
 resource "github_repository_environment" "environments" {
