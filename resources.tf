@@ -1,11 +1,23 @@
-data "github_repositories" "my_topics" {
+data "github_user" "current" { # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/user
+  username = var.github_owner  # Retrieve information about the currently authenticated user.
+}
+
+data "github_repositories" "my_topics" { # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repositories
   # https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
   query = "user:${var.github_owner} topic:practice"
 }
 
-# https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/user
-data "github_user" "current" {
-  username = var.github_owner # Retrieve information about the currently authenticated user.
+resource "github_branch_protection" "main" { # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection
+  for_each = toset(data.github_repositories.my_topics.names)
+
+  repository_id = each.key
+  pattern       = "{main,master}"
+
+  # https://docs.github.com/en/rest/branches/branch-protection
+  required_pull_request_reviews {
+    required_approving_review_count = 2
+    dismiss_stale_reviews           = true # Dismiss approved reviews automatically when a new commit is pushed
+  }
 }
 
 resource "github_repository_environment" "environments" {

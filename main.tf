@@ -1,8 +1,6 @@
-# https://registry.terraform.io/providers/integrations/github/latest/docs
-
 terraform {
   required_providers {
-    github = {
+    github = { # https://registry.terraform.io/providers/integrations/github/latest/docs
       source  = "integrations/github"
       version = "~> 6.0"
     }
