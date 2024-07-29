@@ -26,4 +26,14 @@ locals {
       }
     ]
   ])
+
+  existing_envs = flatten([
+    for repo in data.github_repositories.my_topics.names : [
+      for env in data.github_repository_environments.my_envs[repo].environments : {
+        repository = repo
+        env_name   = env.name
+        env_id     = env.node_id
+      }
+    ]
+  ])
 }
