@@ -12,6 +12,10 @@ resource "github_repository_environment" "environments" {
     for env in local.repo_environments : "${env.repository} - ${env.environment}" => env
   })
 
+  # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_environment
   repository  = each.value.repository
   environment = each.value.environment
+  reviewers {
+    users = each.value.environment == "Production" ? [var.github_owner] : []
+  }
 }
