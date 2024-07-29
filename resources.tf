@@ -3,6 +3,11 @@ data "github_repositories" "my_topics" {
   query = "user:${var.github_owner} topic:practice"
 }
 
+# https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/user
+data "github_user" "current" {
+  username = "" # Retrieve information about the currently authenticated user.
+}
+
 resource "github_repository_environment" "environments" {
   # https://developer.hashicorp.com/terraform/language/meta-arguments/for_each
   # local.repo_environments is a list of objects
@@ -16,6 +21,6 @@ resource "github_repository_environment" "environments" {
   repository  = each.value.repository
   environment = each.value.environment
   reviewers {
-    users = each.value.environment == "Production" ? [var.github_owner] : []
+    users = each.value.environment == "Production" ? [data.github_user.current.id] : []
   }
 }
