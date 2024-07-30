@@ -1,3 +1,4 @@
+/*
 data "github_branch_protection_rules" "my_rules" {
   # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repository_environments
   for_each   = toset(data.github_repositories.my_topics.names)
@@ -14,6 +15,7 @@ import {
   to = github_branch_protection.main[each.key]
   id = "${each.key}:{main,master}"
 }
+*/
 
 data "github_repository_environments" "my_envs" {
   # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repository_environments

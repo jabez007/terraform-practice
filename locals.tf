@@ -1,6 +1,4 @@
 locals {
-  environments = ["Development", "UAT", "Production"]
-
   #### https://developer.hashicorp.com/terraform/language/functions/flatten#flattening-nested-structures-for-for_each
   # create a list of objects
   # [
@@ -20,7 +18,7 @@ locals {
   ####
   repo_environments = flatten([
     for repo in data.github_repositories.my_topics.names : [
-      for env in local.environments : {
+      for env in var.environments : {
         repository  = repo
         environment = env
       }
@@ -32,8 +30,7 @@ locals {
       for env in data.github_repository_environments.my_envs[repo].environments : {
         repository = repo
         env_name   = env.name
-        env_id     = env.node_id
-      }
+      } if(contains(var.environments, env.name))
     ]
   ])
 }
