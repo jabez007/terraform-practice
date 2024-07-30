@@ -1,11 +1,14 @@
-name: Update Repos' Environments
+name: Plan Updates to Repos' Environments
 
 on:
-  workflow_dispatch:    # Allows manual triggering of the workflow
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
-  terraform_apply:
-    name: Apply Terraform
+  terraform_plan:
+    name: Plan Terraform
     runs-on: ubuntu-latest
     permissions: # https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
       contents: read
@@ -22,14 +25,17 @@ jobs:
       - name: Initialize Terraform
         run: terraform init
 
-      - name: Download Plan Output
-        uses: actions/download-artifact@v3
+      - name: Validate Terraform
+        run: terraform validate
+
+      - name: Plan Terraform
+        run: terraform plan -out=tfplan-${{ github.sha }}
+    
+      - name: Save Plan Output
+        uses: actions/upload-artifact@v3
         with:
           name: tfplan-${{ github.sha }}
           path: tfplan-${{ github.sha }}
-
-      - name: Apply Terraform
-        run: terraform apply -auto-approve tfplan-${{ github.sha }}
 
     env:
       TF_VAR_github_owner: ${{ github.actor }}
