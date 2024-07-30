@@ -15,20 +15,20 @@ data "github_repositories" "my_topics" { # https://registry.terraform.io/provide
   query = var.github_org != "" ? "org:${var.github_org} topic:${join("topic:", var.topics)}" : "user:${var.github_owner} topic:${join("topic:", var.topics)}"
 }
 
-/*
-resource "github_branch_protection" "main" { # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection
-  for_each = toset(data.github_repositories.my_topics.names)
+resource "github_branch_protection" "rules" { # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection
+  for_each = tomap({
+    for pat in local.branch_rules : "${pat.repository} - ${pat.pattern}" => pat
+  })
 
-  repository_id = each.key
-  pattern       = "{main,master}"
+  repository_id = each.value.repository
+  pattern       = each.value.pattern
 
   # https://docs.github.com/en/rest/branches/branch-protection
   required_pull_request_reviews {
-    required_approving_review_count = 2
+    required_approving_review_count = var.pull_request_review_count
     dismiss_stale_reviews           = true # Dismiss approved reviews automatically when a new commit is pushed
   }
 }
-*/
 
 resource "github_repository_environment" "environments" {
   # https://developer.hashicorp.com/terraform/language/meta-arguments/for_each
@@ -44,8 +44,8 @@ resource "github_repository_environment" "environments" {
   environment = each.value.environment
 
   reviewers {
-    users = contains(var.environments, each.value.environment) ? [for user in data.github_user.reviewers : user.id] : []
-    teams = contains(var.environments, each.value.environment) ? [for team in data.github_team.reviewers : team.id] : []
+    users = [for user in data.github_user.reviewers : user.id]
+    teams = [for team in data.github_team.reviewers : team.id]
   }
 
   deployment_branch_policy {

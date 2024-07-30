@@ -35,4 +35,13 @@ locals {
       } if(contains(var.environments, env.name))
     ]
   ])
+
+  branch_rules = flatten([
+    for repo in data.github_repositories.my_topics.names : [
+      for pat in var.protection_patterns : {
+        repository = repo
+        pattern    = pat
+      }
+    ]
+  ])
 }

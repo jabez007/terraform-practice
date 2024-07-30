@@ -38,3 +38,15 @@ variable "team_reviewers" {
   description = "List of team slugs to add as reviewers for given environments"
   default     = []
 }
+
+variable "protection_patterns" {
+  type        = list(string)
+  description = "List of name patterns using fnmatch sytanx to apply branch protection rules to"
+  default     = ["{main,master}"]
+}
+
+variable "pull_request_review_count" {
+  type        = number
+  description = "Number of approvals needed before allowing a PR to be merged"
+  default     = 2
+}
