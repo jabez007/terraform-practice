@@ -3,6 +3,7 @@ name: Refresh State of Repos' Environments
 on:
   schedule:
     - cron: "0 2 * * *"  # Runs at 2:00 AM UTC every night
+  workflow_dispatch:    # Allows manual triggering of the workflow
   
 jobs:
   terraform_refresh:
