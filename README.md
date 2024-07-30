@@ -1,5 +1,11 @@
 # terraform-practice
 
+## Gotchas
+
+### Searching for Forked Repos
+
+Github doesn't index forks, so the query in data.github_repositories.my_topics will never find any of repos created by forking
+
 ## Prerequisites
 
 ### Secrets
