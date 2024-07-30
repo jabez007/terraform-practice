@@ -47,7 +47,7 @@ locals {
 
   existing_rules = flatten([
     for repo in data.github_repositories.my_topics.names : [
-      for rule in data.github_branch_protection_rules.my_rules[repo].environments : {
+      for rule in data.github_branch_protection_rules.my_rules[repo].rules : {
         repository   = repo
         rule_pattern = rule.pattern
       } if(contains(var.protection_patterns, rule.pattern))
