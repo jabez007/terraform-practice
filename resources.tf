@@ -1,5 +1,5 @@
 data "github_user" "reviewers" { # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/user
-  for_each = toset(var.user_reviewers)
+  for_each = toset(local.user_reviewers)
 
   username = each.key
 }

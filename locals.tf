@@ -1,4 +1,6 @@
 locals {
+  user_reviewers = (length(var.user_reviewers) == 0 && length(var.team_reviewers) == 0) ? [var.github_owner] : var.user_reviewers
+
   #### https://developer.hashicorp.com/terraform/language/functions/flatten#flattening-nested-structures-for-for_each
   # create a list of objects
   # [

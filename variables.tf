@@ -30,7 +30,7 @@ variable "environments" {
 variable "user_reviewers" {
   type        = list(string)
   description = "List of usernames to add as reviewers for given environments"
-  default     = [var.github_owner]
+  default     = []
 }
 
 variable "team_reviewers" {
