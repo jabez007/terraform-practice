@@ -1,17 +1,20 @@
 name: Update Repos' Environments
 
 on:
-  #  push:
-  #    branches:
-  #      - main
-  #      - master
-  workflow_dispatch: # Allows manual triggering of the workflow
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - "**/*.tf"
+      - "**/*.tfvars"
+  workflow_dispatch:
 
 jobs:
-  terraform_apply:
-    name: Apply Terraform
+  terraform_plan:
+    name: Plan Terraform
     runs-on: ubuntu-latest
-    permissions: # https://docs.github.com/en/actions/using-jobs/assigning-permissions-to-jobs
+    permissions:
       contents: read
 
     steps:
@@ -21,7 +24,50 @@ jobs:
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: 1.15.1 # Use the latest Terraform version or the version you need
+          terraform_version: 1.15.1
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Validate Terraform
+        run: terraform validate
+
+      - name: Plan Terraform
+        run: terraform plan -out=tfplan-${{ github.sha }}
+
+      - name: Save Plan Output
+        uses: actions/upload-artifact@v7
+        with:
+          name: tfplan-${{ github.sha }}
+          path: tfplan-${{ github.sha }}
+          retention-days: 7
+
+    env:
+      TF_VAR_github_owner: ${{ github.actor }}
+      TF_VAR_github_token: ${{ secrets.GH_PAT }}
+      TF_TOKEN_app_terraform_io: ${{ secrets.TF_TOKEN }}
+
+  terraform_apply:
+    name: Apply Terraform
+    needs: terraform_plan
+    runs-on: ubuntu-latest
+    
+    # By assigning this job to an environment, you can configure GitHub to require
+    # manual approval before this job executes!
+    environment:
+      name: terraform-apply
+      
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.15.1
 
       - name: Initialize Terraform
         run: terraform init
@@ -30,7 +76,6 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           name: tfplan-${{ github.sha }}
-          path: tfplan-${{ github.sha }}
 
       - name: Apply Terraform
         run: terraform apply -auto-approve tfplan-${{ github.sha }}
@@ -38,4 +83,4 @@ jobs:
     env:
       TF_VAR_github_owner: ${{ github.actor }}
       TF_VAR_github_token: ${{ secrets.GH_PAT }}
-      TF_TOKEN_app_terraform_io: ${{ secrets.TF_TOKEN }} # used as a bearer authorization token when the CLI makes service requests to the hostname app.terraform.io
+      TF_TOKEN_app_terraform_io: ${{ secrets.TF_TOKEN }}
