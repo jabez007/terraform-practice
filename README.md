@@ -27,6 +27,19 @@ A personal access token from Github that has permissions to manage all of the re
 * For github_branch_protection - "Administration" repository permissions (write)
 * For github_repository_environment - "Administration" repository permissions (write)
 
+### GitHub Environment Setup (For CI Deployments)
+
+The GitHub Actions workflow that applies changes (`update-repos.yml`) uses a GitHub Environment to pause for manual approval before executing `terraform apply`. For this to work, you must manually configure the environment in this repository's settings:
+
+1.  Navigate to your repository on GitHub.
+2.  Click on **Settings** -> **Environments**.
+3.  Click **New environment** and name it exactly: `terraform-apply`.
+4.  In the environment settings, check the box for **Required reviewers**.
+5.  Search for and add your own GitHub username as a reviewer.
+6.  Click **Save protection rules**.
+
+When you merge code to the default branch, the workflow will generate a plan and then wait for you to review and click "Approve and Apply" from the Actions tab.
+
 ## Pull Request Review Process
 
 By default, the branch protection rules enforced by this configuration require **2 approvals** before a pull request can be merged. 
