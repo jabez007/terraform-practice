@@ -1,8 +1,10 @@
 terraform {
+  required_version = "~> 1.15"
+
   required_providers {
     github = { # https://registry.terraform.io/providers/integrations/github/latest/docs
       source  = "integrations/github"
-      version = "~> 6.0"
+      version = "~> 6.12"
     }
   }
 

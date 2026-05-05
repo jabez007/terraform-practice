@@ -1,7 +1,11 @@
 name: Update Repos' Environments
 
 on:
-  workflow_dispatch:    # Allows manual triggering of the workflow
+  #  push:
+  #    branches:
+  #      - main
+  #      - master
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   terraform_apply:
@@ -12,18 +16,18 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: 1.9.3  # Use the latest Terraform version or the version you need
+          terraform_version: 1.15.1 # Use the latest Terraform version or the version you need
 
       - name: Initialize Terraform
         run: terraform init
 
       - name: Download Plan Output
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: tfplan-${{ github.sha }}
           path: tfplan-${{ github.sha }}

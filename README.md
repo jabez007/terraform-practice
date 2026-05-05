@@ -26,3 +26,56 @@ A personal access token from Github that has permissions to manage all of the re
 
 * For github_branch_protection - "Administration" repository permissions (write)
 * For github_repository_environment - "Administration" repository permissions (write)
+
+## Pull Request Review Process
+
+By default, the branch protection rules enforced by this configuration require **2 approvals** before a pull request can be merged. 
+
+### Admin Bypass for Personal Projects
+
+For personal projects, getting two approvals might be impractical or slow. Because this configuration does not strictly enforce branch protection rules on repository administrators (the `enforce_admins` setting is not enabled), you have an "Admin Bypass":
+
+*   **Your own PRs:** You can merge your own PRs at any time by using your administrator privileges to bypass the required reviews.
+*   **Contributor PRs:** If a contributor opens a PR, they will be blocked until they get 2 approvals. However, as the repository owner, you can provide 1 approval and then use your admin privileges to override the second requirement and merge the code.
+
+### Using CODEOWNERS
+
+If you find that the default requirement of 2 approvals is too restrictive even for contributors, you can update the `pull_request_review_count` variable to `1`. In doing so, it is highly recommended to implement a `CODEOWNERS` file in your repositories. This ensures that the single required approval comes from a designated code owner, maintaining a strong level of security and oversight.
+
+### Protecting Long-Lived Branches
+
+By default, this configuration automatically protects the **default branch** (e.g., `main`, `master`, `gh-pages`) of every managed repository, as well as any branches matching the `protection_patterns` list (which defaults to an empty list `[]`).
+
+If you use a GitFlow-like model where certain repositories have additional long-lived branches (like `development`, `staging`, or `blog`) that also require protection rules, you can specify them using the `long_lived_branches` variable.
+
+This variable takes a map where the key is the repository name and the value is a list of the long-lived branches for that specific repo:
+
+```hcl
+long_lived_branches = {
+  "my-frontend-repo"  = ["development"]
+  "my-fullstack-repo" = ["development", "blog", "uat"]
+}
+```
+
+These branches will receive the exact same protection rules (review requirements, linear history, etc.) as the default branch.
+
+### Managing Collaborators
+
+If you want to invite outside contributors to specific repositories, you can manage their access via code using the `collaborators` variable. This provides a clear audit trail of who has access to which repository and at what permission level.
+
+The variable takes a map of repository names to a map of usernames and their desired permission level. The available permission levels are:
+
+*   **`pull`**: Read-only access. Best for non-code contributors who want to view or discuss the project.
+*   **`triage`**: Can manage issues and pull requests (apply labels, close/reopen, assign) without having push access to the code.
+*   **`push`**: Read and write access. The standard role for contributors actively pushing commits to feature branches.
+*   **`maintain`**: Can push code and manage some repository settings (like managing issues/PRs), but cannot change sensitive settings like repository visibility or delete the repository.
+*   **`admin`**: Full access to the repository, including sensitive and destructive actions.
+
+```hcl
+collaborators = {
+  "my-awesome-project" = {
+    "contributor-github-handle" = "push"
+    "another-developer"         = "triage"
+  }
+}
+```

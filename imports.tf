@@ -7,11 +7,11 @@ data "github_branch_protection_rules" "my_rules" {
 
 import {
   for_each = tomap({
-    for ext in local.existing_rules : "${ext.repository} - ${ext.rule_name}" => ext
+    for ext in local.existing_rules : "${ext.repository} - ${ext.rule_pattern}" => ext
   })
 
   to = github_branch_protection.rules[each.key]
-  id = "${each.value.repository}:${each.value.rule_name}"
+  id = "${each.value.repository}:${each.value.rule_pattern}"
 }
 
 data "github_repository_environments" "my_envs" {
