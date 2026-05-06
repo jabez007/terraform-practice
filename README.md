@@ -4,11 +4,20 @@
 
 ### Searching for Forked Repos
 
-Github does not index forks, so the query in data.github_repositories.my_topics will never find any repos created as a fork
+Github does not index forks, so the query in `data.github_repositories.my_topics` will never find any repos created as a fork.
 
 ### Searching for Private Repos
 
-Unless you are paying money to Github, the query in data.github_repositories.my_topics will probably NOT find your private repos
+Unless you are paying money to Github, the query in `data.github_repositories.my_topics` will probably NOT find your private repos.
+
+### Explicit Management (The `managed_repos` Solution)
+
+To overcome the limitations of the topic-based search, this configuration uses a `managed_repos` local variable. This variable combines repositories discovered via topics with any repository explicitly mentioned in:
+
+*   `long_lived_branches`
+*   `collaborators`
+
+**This means you can manage private repositories and forks** simply by adding them to one of these variables in your `terraform.tfvars` file. Once added, Terraform will fetch their data directly (bypassing search) and apply all standard protection rules and collaborator settings.
 
 ## Prerequisites
 

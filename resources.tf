@@ -16,7 +16,7 @@ data "github_repositories" "my_topics" { # https://registry.terraform.io/provide
 }
 
 data "github_repository" "repos" {
-  for_each = toset(data.github_repositories.my_topics.names)
+  for_each = toset(local.managed_repos)
 
   name = each.key
 }
