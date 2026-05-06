@@ -28,7 +28,7 @@ jobs:
         run: terraform validate
 
       - name: Refresh Terraform
-        run: terraform apply -refresh-only -auto-approve
+        run: terraform apply -refresh-only -auto-approve -input=false
 
     env:
       TF_VAR_github_owner: ${{ github.actor }}
