@@ -36,7 +36,7 @@ resource "github_branch_protection" "rules" { # https://registry.terraform.io/pr
   }
 
   require_conversation_resolution = true
-  required_linear_history         = true
+  required_linear_history         = var.enable_required_linear_history
 }
 
 resource "github_repository_environment" "environments" {

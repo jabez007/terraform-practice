@@ -39,6 +39,7 @@ jobs:
         with:
           name: tfplan-${{ github.sha }}
           path: tfplan-${{ github.sha }}
+          retention-days: 7
 
     env:
       TF_VAR_github_owner: ${{ github.actor }}

@@ -50,6 +50,7 @@ jobs:
   terraform_apply:
     name: Apply Terraform
     needs: terraform_plan
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     
     # By assigning this job to an environment, you can configure GitHub to require
@@ -78,7 +79,7 @@ jobs:
           name: tfplan-${{ github.sha }}
 
       - name: Apply Terraform
-        run: terraform apply -auto-approve tfplan-${{ github.sha }}
+        run: terraform apply tfplan-${{ github.sha }}
 
     env:
       TF_VAR_github_owner: ${{ github.actor }}

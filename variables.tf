@@ -57,13 +57,28 @@ variable "pull_request_review_count" {
   default     = 2
 
   validation {
-    condition     = var.pull_request_review_count >= 0 && var.pull_request_review_count <= 6
-    error_message = "The pull_request_review_count must be between 0 and 6 as per GitHub API limits."
+    condition     = var.pull_request_review_count >= 0 && var.pull_request_review_count <= 6 && var.pull_request_review_count == floor(var.pull_request_review_count)
+    error_message = "The pull_request_review_count must be an integer between 0 and 6 as per GitHub API limits."
   }
+}
+
+variable "enable_required_linear_history" {
+  type        = bool
+  description = "Whether to require a linear history for the protected branches. This will fail if the repository does not allow squash or rebase merges."
+  default     = false
 }
 
 variable "collaborators" {
   type        = map(map(string))
   description = "Map of repository names to a map of usernames and their permission level (pull, triage, push, maintain, admin)"
   default     = {}
+
+  validation {
+    condition = alltrue([
+      for repo, users in var.collaborators : alltrue([
+        for user, perm in users : contains(["pull", "triage", "push", "maintain", "admin"], perm)
+      ])
+    ])
+    error_message = "Invalid collaborator permission. Allowed values are: pull, triage, push, maintain, admin."
+  }
 }
