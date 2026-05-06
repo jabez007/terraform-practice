@@ -22,13 +22,13 @@ jobs:
           terraform_version: 1.15.1  # Use the latest Terraform version or the version you need
 
       - name: Initialize Terraform
-        run: terraform init
+        run: terraform init -input=false
 
       - name: Validate Terraform
         run: terraform validate
 
       - name: Refresh Terraform
-        run: terraform apply -refresh-only
+        run: terraform apply -refresh-only -auto-approve -input=false
 
     env:
       TF_VAR_github_owner: ${{ github.actor }}
