@@ -15,6 +15,12 @@ data "github_repositories" "my_topics" { # https://registry.terraform.io/provide
   query = var.github_org != "" ? "org:${var.github_org} topic:${join("topic:", var.topics)}" : "user:${var.github_owner} topic:${join("topic:", var.topics)}"
 }
 
+data "github_repository" "repos" {
+  for_each = toset(data.github_repositories.my_topics.names)
+
+  name = each.key
+}
+
 resource "github_branch_protection" "rules" { # https://registry.terraform.io/providers/integrations/github/latest/docs/resources/branch_protection
   for_each = tomap({
     for pat in local.branch_rules : "${pat.repository} - ${pat.pattern}" => pat
@@ -28,6 +34,9 @@ resource "github_branch_protection" "rules" { # https://registry.terraform.io/pr
     required_approving_review_count = var.pull_request_review_count
     dismiss_stale_reviews           = true # Dismiss approved reviews automatically when a new commit is pushed
   }
+
+  require_conversation_resolution = true
+  required_linear_history         = var.enable_required_linear_history
 }
 
 resource "github_repository_environment" "environments" {
@@ -52,4 +61,14 @@ resource "github_repository_environment" "environments" {
     protected_branches     = true
     custom_branch_policies = false
   }
+}
+
+resource "github_repository_collaborator" "collaborators" {
+  for_each = tomap({
+    for col in local.repo_collaborators : "${col.repository} - ${col.username}" => col
+  })
+
+  repository = each.value.repository
+  username   = each.value.username
+  permission = each.value.permission
 }

@@ -1,0 +1,36 @@
+# Rename this file to terraform.tfvars to use it.
+# Terraform will automatically load variables defined in terraform.tfvars.
+
+# --- Branch Protection ---
+
+# Map of repository names to a list of their long-lived branches that require protection.
+# The default branch of every repo is protected automatically.
+long_lived_branches = {
+  "my-frontend-repo"  = ["development"]
+  "my-fullstack-repo" = ["development", "blog", "uat"]
+}
+
+# Number of approvals needed before allowing a PR to be merged.
+# Must be between 0 and 6. Defaults to 2.
+pull_request_review_count = 1
+
+# List of name patterns using fnmatch syntax to apply branch protection rules to.
+# Defaults to an empty list.
+# protection_patterns = ["release-*", "v*"]
+
+# --- Collaborators ---
+
+# Map of repository names to a map of usernames and their permission level.
+# Permission levels: pull, triage, push, maintain, admin.
+collaborators = {
+  "my-awesome-project" = {
+    "contributor-github-handle" = "push"
+    "another-developer"         = "triage"
+  }
+}
+
+# --- Environments ---
+
+# List of environments to set up for selected repos.
+# Defaults to ["Production"].
+# environments = ["Production", "Staging", "Development"]

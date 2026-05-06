@@ -36,9 +36,17 @@ locals {
     ]
   ])
 
+  repo_protection_patterns = {
+    for repo in data.github_repositories.my_topics.names :
+    repo => distinct(concat(
+      [data.github_repository.repos[repo].default_branch],
+      var.protection_patterns,
+      lookup(var.long_lived_branches, repo, [])
+    ))
+  }
   branch_rules = flatten([
-    for repo in data.github_repositories.my_topics.names : [
-      for pat in var.protection_patterns : {
+    for repo, patterns in local.repo_protection_patterns : [
+      for pat in patterns : {
         repository = repo
         pattern    = pat
       }
@@ -50,7 +58,17 @@ locals {
       for rule in data.github_branch_protection_rules.my_rules[repo].rules : {
         repository   = repo
         rule_pattern = rule.pattern
-      } if(contains(var.protection_patterns, rule.pattern))
+      } if(contains(local.repo_protection_patterns[repo], rule.pattern))
+    ]
+  ])
+
+  repo_collaborators = flatten([
+    for repo, users in var.collaborators : [
+      for username, permission in users : {
+        repository = repo
+        username   = username
+        permission = permission
+      }
     ]
   ])
 }
