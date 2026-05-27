@@ -7,6 +7,11 @@ locals {
     keys(var.collaborators)
   ))
 
+  active_managed_repos = [
+    for repo in local.managed_repos : repo
+    if !data.github_repository.repos[repo].archived
+  ]
+
   #### https://developer.hashicorp.com/terraform/language/functions/flatten#flattening-nested-structures-for-for_each
   # create a list of objects
   # [
@@ -25,7 +30,7 @@ locals {
   # ]
   ####
   repo_environments = flatten([
-    for repo in local.managed_repos : [
+    for repo in local.active_managed_repos : [
       for env in var.environments : {
         repository  = repo
         environment = env
@@ -34,7 +39,7 @@ locals {
   ])
 
   existing_envs = flatten([
-    for repo in local.managed_repos : [
+    for repo in local.active_managed_repos : [
       for env in data.github_repository_environments.my_envs[repo].environments : {
         repository = repo
         env_name   = env.name
@@ -43,7 +48,7 @@ locals {
   ])
 
   repo_protection_patterns = {
-    for repo in local.managed_repos :
+    for repo in local.active_managed_repos :
     repo => distinct(concat(
       [data.github_repository.repos[repo].default_branch],
       var.protection_patterns,
@@ -60,7 +65,7 @@ locals {
   ])
 
   existing_rules = flatten([
-    for repo in local.managed_repos : [
+    for repo in local.active_managed_repos : [
       for rule in data.github_branch_protection_rules.my_rules[repo].rules : {
         repository   = repo
         rule_pattern = rule.pattern
@@ -75,6 +80,6 @@ locals {
         username   = username
         permission = permission
       }
-    ]
+    ] if contains(local.active_managed_repos, repo)
   ])
 }
