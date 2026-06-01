@@ -1,6 +1,6 @@
 data "github_branch_protection_rules" "my_rules" {
   # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/branch_protection_rules
-  for_each = toset(local.managed_repos)
+  for_each = toset(local.active_managed_repos)
 
   repository = each.key
 }
@@ -16,7 +16,7 @@ import {
 
 data "github_repository_environments" "my_envs" {
   # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repository_environments
-  for_each = toset(local.managed_repos)
+  for_each = toset(local.active_managed_repos)
 
   repository = each.key
 }

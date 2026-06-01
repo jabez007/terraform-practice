@@ -1,9 +1,10 @@
 long_lived_branches = {
   "cryptotron.vue" = ["development"]
+  "heur-aegis-dex" = ["development"]
 }
 
 collaborators = {
-  "PoGo-PvP-Rankings" = {
+  "heur-aegis-dex" = {
     "vice-magus-faolan" = "push"
   }
   "cryptotron.vue" = {
