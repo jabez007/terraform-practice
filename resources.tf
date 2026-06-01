@@ -12,7 +12,7 @@ data "github_team" "reviewers" { # https://registry.terraform.io/providers/integ
 
 data "github_repositories" "my_topics" { # https://registry.terraform.io/providers/integrations/github/latest/docs/data-sources/repositories
   # https://docs.github.com/en/search-github/getting-started-with-searching-on-github/understanding-the-search-syntax
-  query = var.github_org != "" ? "org:${var.github_org} topic:${join("topic:", var.topics)}" : "user:${var.github_owner} topic:${join("topic:", var.topics)}"
+  query = var.github_org != "" ? "org:${var.github_org} topic:${join("topic:", var.topics)} archived:false" : "user:${var.github_owner} topic:${join("topic:", var.topics)} archived:false"
 }
 
 data "github_repository" "repos" {
