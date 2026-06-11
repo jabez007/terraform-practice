@@ -10,4 +10,7 @@ collaborators = {
   "cryptotron.vue" = {
     "vice-magus-faolan" = "push"
   }
+  "TC2-BBS-mesh" = {
+    "vice-magus-faolan" = "push"
+  }
 }
